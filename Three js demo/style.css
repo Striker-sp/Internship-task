@@ -1,0 +1,97 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html{
+  overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+.webgl{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+nav{
+  color: #ffffff;
+  z-index: 2;
+  position: relative;
+  padding: 4rem 8rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav a{
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+nav ul{
+  list-style: none;
+  display: flex;
+  gap: 4rem;
+}
+
+
+nav li {
+  display: inline-block;
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+nav li:hover{
+  color: #43ffd6;
+  cursor: pointer;
+}
+
+nav li::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  border-radius: 5px;
+  height: 0.05em;
+  bottom: 0;
+  left: 0;
+  background: #43ffd6;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+nav li:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+
+.title{
+  color: #ffffff;
+  z-index: 2;
+  position: absolute;
+  font-size: 2rem;
+  left: 50%;
+  top: 90%;
+  transform: translate(-50%, -75%);
+}
+
+.title:hover{
+  color: #43ffd6;
+  z-index: 2;
+  position: absolute;
+  font-size: 2rem;
+  left: 50%;
+  top: 90%;
+  transform: translate(-50%, -75%);
+  cursor:crosshair;
+}
+
+nav a:hover{
+  text-decoration: none;
+  color: #43ffd6;
+  font-weight: bold;
+}
