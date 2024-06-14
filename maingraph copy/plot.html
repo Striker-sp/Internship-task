@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plotly with Firebase</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+
+        <style>
+            *{
+                box-sizing: border-box;
+            }
+            
+            
+            .group{
+                display:flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 10px;
+                margin: 0 auto;
+            }
+
+            .group label, input{
+                padding: 0 auto;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .grp{
+                display: flex;
+                justify-content: space-between;
+            }
+        </style>
+</head>
+<body>
+    <div id="plotlyChart"></div>
+    <div class="group">
+    <div>
+        <label for="x-min">X Min: </label>
+        <input type="number" id="x-min" />
+    </div>
+    <div>
+        <label for="x-max">X Max: </label>
+        <input type="number" id="x-max" />
+    </div>
+    <div>
+        <label for="y-min">Y Min: </label>
+        <input type="number" id="y-min" />
+    </div>
+    <div>
+        <label for="y-max">Y Max: </label>
+        <input type="number" id="y-max" />
+    </div>
+    <div>
+        <button id="update-button" class="btn btn-dark btn-hover text-decoration-none text-white mb-2 mt-2" >Plot Range</button>
+    </div>
+    </div>
+    <script type="module">
+        // Firebase configuration
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getDatabase, set, ref, push, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAFFqnwOQgtIU2NiuXU_GEx50MG_kir1iI",
+            authDomain: "dummy-liph.firebaseapp.com",
+            databaseURL: "https://dummy-liph-default-rtdb.firebaseio.com",
+            projectId: "dummy-liph",
+            storageBucket: "dummy-liph.appspot.com",
+            messagingSenderId: "888250342945",
+            appId: "1:888250342945:web:37785e82cdaa8791ff8d60"
+          };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+                
+        // Reference to the Firebase database
+        const db = getDatabase(app);
+
+
+        const dbRef = ref(db);
+
+
+        ////////////////////////
+
+        const config = { responsive : true }
+        // Function to process and plot data
+        function processAndPlotData(data) {
+            const xValues = [];
+            const yValues = [];
+
+            // Assume data is an object where keys are x-values and values are y-values
+             for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    xValues.push(key);
+                    yValues.push(data[key]['value1']);
+                }
+            } 
+
+            plotData(xValues, yValues);
+        }
+
+        // Function to create Plotly plot
+        function plotData(xValues, yValues) {
+            const trace = {
+                x: xValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: {
+                    color: 'rgb(17, 157, 255)',
+                    size: 12,
+                    line: {
+                      color: 'rgb(231, 99, 250)',
+                      width: 2
+                    }
+                  },
+            };
+
+            const data = [trace];
+
+            const layout = {
+                title: 'Plotly Chart with Firebase Data',
+                paper_bgcolor: "#ffffff",
+                plot_bgcolor: "#ffffff",
+                xaxis: {
+                    title: 'Random generated plotted values'
+                },
+                yaxis: {
+                    title: 'Timeline'
+                }
+            };
+
+            Plotly.newPlot('plotlyChart', data, layout);
+        }
+
+
+        /* //////////////////////////////////////////////////////////// */
+
+        
+        function getDataFunctionfromFirebase(){
+            const dbRef = ref(db);
+            get(child(dbRef, 'Data')).then((snapshot)=>{
+                if(snapshot.exists()){
+                 const data=[];   
+                snapshot.forEach(childSnapshot => {
+                    data.push(childSnapshot.val());
+                });
+                processAndPlotData(data);
+            }else{
+                console.log("no data available");
+            }
+        }).catch((error)=>{
+            console.error("errorfetching",error);
+        });
+        }
+//        ?????????????????????????????????????????????????????????????
+
+        // Function to update the plot range
+        document.getElementById('update-button').addEventListener('click', function() {
+            var xMin = parseFloat(document.getElementById('x-min').value);
+            var xMax = parseFloat(document.getElementById('x-max').value);
+            var yMin = parseFloat(document.getElementById('y-min').value);
+            var yMax = parseFloat(document.getElementById('y-max').value);
+
+            var update = {
+                'xaxis.range': [xMin, xMax],
+                'yaxis.range': [yMin, yMax]
+            };
+
+            Plotly.relayout('plotlyChart', update);
+        });
+
+        // Fetch data when the page loads
+        window.onload = getDataFunctionfromFirebase;
+
+
+    </script>
+    <div class="grp">
+    <button class="btn btn-dark btn-hover"><a href="maingraph.html" class="text-decoration-none text-white">Home</a></button>
+    <button class="btn btn-dark btn-hover"><a href="tablegraphdata.html" class="text-decoration-none text-white">Table</a></button>
+    </div>
+</body>
+</html>

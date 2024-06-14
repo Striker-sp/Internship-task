@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line Graph Example</title>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+<center>
+<h1 style="color: rgb(138, 43, 226);"><u>Line Graph Example</u></h1>
+<!-- Textbox for random value -->
+<input type="text" id="randomValue" readonly>
+<button type="submit" id="pushButton" style="cursor: pointer; border: 2px solid rgb(138, 43, 226); color: rgb(138, 43, 226);">Save Data</button>
+<a href="tablegraphdata.html" target="_blank">
+    <button type="submit" id="showButton" style="cursor: pointer; border: 2px solid rgb(138, 43, 226); color: rgb(138, 43, 226);">Show Data</button></a>
+</center>
+
+<!-- Canvas to render the graph -->
+<canvas id="myChart" width="400" height="150"></canvas>
+
+
+<script src="maingraph.js">
+</script>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getDatabase, set, ref, push } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+    
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFFqnwOQgtIU2NiuXU_GEx50MG_kir1iI",
+      authDomain: "dummy-liph.firebaseapp.com",
+      databaseURL: "https://dummy-liph-default-rtdb.firebaseio.com",
+      projectId: "dummy-liph",
+      storageBucket: "dummy-liph.appspot.com",
+      messagingSenderId: "888250342945",
+      appId: "1:888250342945:web:37785e82cdaa8791ff8d60"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    
+    // Reference to the Firebase database
+    const db = getDatabase(app);
+
+    // function
+    const postListRef = ref(db, 'Data/');
+      const newPostRef = push(postListRef);
+      function pushData(){
+      set(newPostRef, {
+          value1 : randomValue.value,
+          })
+          .then(() => {
+              alert("Data added successfully");
+          })
+          .catch((error) => {
+              console.log(error);
+      });
+      }
+      // declaring button
+      let pushButton = document.getElementById('pushButton');
+
+      // Event listener for the push button click
+      document.getElementById('pushButton').addEventListener('click', pushData);
+      document.getElementById('pushButton').addEventListener('click', pushData);
+  </script>
+  <!-- data for complex charts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+ </body>
+</html>
